@@ -16,11 +16,11 @@
       <div class="city fl">
         <div class="start-city select-wrap">
           <label>出发城市:</label>
-          <input-city :value="startCity" :isShow="isStartShow" @newIsShow="newStartIsShow" @select="startHandle" @newCity="newStartCity" @city="handleStartCity"></input-city>
+          <input-city :value="startCity" :isShow="isStartShow" @newFuzzy="startFuzzy" :fuzzyShow="startFuzzyShow" @newIsShow="newStartIsShow" @select="startHandle" @newCity="newStartCity" @city="handleStartCity"></input-city>
         </div>
         <div class="arrive-city select-wrap">
           <label>到达城市:</label>
-          <input-city :value="arriveCity" :isShow="isArriveShow" @newIsShow="newArriveIsShow" @select="arriveHandle" @newCity="newArriveCity" @city="handleArriveCIty"></input-city>
+          <input-city :value="arriveCity" :isShow="isArriveShow" @newFuzzy="arriveFuzzy" :fuzzyShow="arriveFuzzyShow" @newIsShow="newArriveIsShow" @select="arriveHandle" @newCity="newArriveCity" @city="handleArriveCIty"></input-city>
         </div>
       </div>
       <div class="change" :class="[changeSelected ? 'change-select' : '']" @click="changeCity" @mouseenter="changeEnterHandle" @mouseleave="changeLeaveHandle"></div>
@@ -70,7 +70,9 @@ export default {
       mode: 'single',
       changeSelected: false,
       isStartShow: false,
-      isArriveShow: false
+      isArriveShow: false,
+      startFuzzyShow: false,
+      arriveFuzzyShow: false
     }
   },
   computed: {
@@ -131,6 +133,12 @@ export default {
     },
     newArriveIsShow (newIsShow) {
       this.isArriveShow = newIsShow
+    },
+    startFuzzy (newFuzzy) {
+      this.startFuzzyShow = newFuzzy
+    },
+    arriveFuzzy (newFuzzy) {
+      this.arriveFuzzyShow = newFuzzy
     }
   },
   mounted () {
@@ -138,6 +146,8 @@ export default {
       console.log('click')
       this.isArriveShow = false
       this.isStartShow = false
+      this.startFuzzyShow = false
+      this.arriveFuzzyShow = false
     }, false)
   }
 }

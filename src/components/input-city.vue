@@ -1,9 +1,9 @@
 <template>
   <div class="input-item">
     <input type="text" ref="inputItem" v-model="myValue" :placeholder="placeHolder" @input="inputChange" @click.stop="handleSelect">
-    <div class="fuzzy-search" v-show="fuzzyShow">
+    <div class="fuzzy-search" v-show="MyFuzzyShow">
       <ul>
-        <li @click="fuzzySelect(item.city)" v-for="(item, index) in nowCitylist" :key="index" class="clear" :class="[index === 0 ? 'selected' : '']">
+        <li @click.stop="fuzzySelect(item.city)" v-for="(item, index) in nowCitylist" :key="index" class="clear" :class="[index === 0 ? 'selected' : '']">
           <span class="fl">{{item.city}}</span>
           <span class="fr">{{item.spell}}</span>
         </li>
@@ -48,12 +48,16 @@ export default {
     isShow: {
       type: Boolean,
       default: false
+    },
+    fuzzyShow: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
     return {
       nowValue: '',
-      fuzzyShow: false,
+      MyFuzzyShow: this.fuzzyShow,
       myIsShow: this.isShow,
       myValue: this.value, // 实现父子组件的双向绑定
       tabContent: ['热门城市', 'ABCDE', 'FGHJ', 'KLMNP', 'QRSTW', 'XYZ'],
@@ -226,14 +230,20 @@ export default {
     inputChange (e) {
       this.nowValue = e.target.value.trim()
       this.myIsShow = false
-      this.fuzzyShow = true
+      this.MyFuzzyShow = true
     },
     fuzzySelect (city) {
       this.myValue = city
-      this.fuzzyShow = false
+      this.MyFuzzyShow = false
     }
   },
   watch: {
+    fuzzyShow (newVal) {
+      this.MyFuzzyShow = newVal
+    },
+    MyFuzzyShow (newVal) {
+      this.$emit('newFuzzy', newVal)
+    },
     isShow (newVal) {
       this.myIsShow = newVal
     },
@@ -241,11 +251,11 @@ export default {
       this.$emit('newIsShow', newVal)
     },
     // 实现父子组件间的双向绑定
-    value (newValue) {
-      this.myValue = newValue
+    value (newVal) {
+      this.myValue = newVal
     },
-    myValue (newValue) {
-      this.$emit('newCity', newValue)
+    myValue (newVal) {
+      this.$emit('newCity', newVal)
     }
   }
 }
