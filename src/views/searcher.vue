@@ -121,7 +121,7 @@ export default {
       this.isArriveShow = false
     }
   },
-  updated () {
+  mounted () {
     document.addEventListener('click', () => {
       console.log('click')
       this.isArriveShow = false
