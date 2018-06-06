@@ -1,6 +1,14 @@
 <template>
   <div class="input-item">
-    <input type="text" v-model="value" :placeholder="placeHolder" @click.stop="handleSelect">
+    <input type="text" ref="inputItem" v-model="myValue" :placeholder="placeHolder" @input="inputChange" @click.stop="handleSelect">
+    <div class="fuzzy-search" v-show="fuzzyShow">
+      <ul>
+        <li @click="fuzzySelect(item.city)" v-for="(item, index) in nowCitylist" :key="index" class="clear" :class="[index === 0 ? 'selected' : '']">
+          <span class="fl">{{item.city}}</span>
+          <span class="fr">{{item.spell}}</span>
+        </li>
+      </ul>
+    </div>
     <div class="select-box" v-show="isShow"  @click.stop="stopBubble">
       <div class="header">
         <span>热门城市/国家(支持汉字/拼音/英文字母)</span>
@@ -24,6 +32,10 @@
 <script>
 export default {
   name: 'input-city',
+  model: {
+    prop: 'value',
+    event: 'changeValue'
+  },
   props: {
     placeHolder: {
       type: String,
@@ -40,8 +52,34 @@ export default {
   },
   data () {
     return {
+      nowValue: '',
+      fuzzyShow: false,
+      myIsShow: this.isShow,
+      myValue: this.value, // 实现父子组件的双向绑定
       tabContent: ['热门城市', 'ABCDE', 'FGHJ', 'KLMNP', 'QRSTW', 'XYZ'],
       selectIndex: 0,
+      selectList: [
+        {
+          city: '北京',
+          spell: 'beijing'
+        },
+        {
+          city: '天津',
+          spell: 'tianjin'
+        },
+        {
+          city: '上海',
+          spell: 'shanghai'
+        },
+        {
+          city: '重庆',
+          spell: 'chongqing'
+        },
+        {
+          city: '北海',
+          spell: 'beihai'
+        }
+      ],
       cityList: [
         [
           {
@@ -162,6 +200,15 @@ export default {
       ]
     }
   },
+  computed: {
+    nowCitylist () {
+      return this.selectList.filter(item => {
+        if (item.city.indexOf(this.nowValue) !== -1 || item.spell.indexOf(this.nowValue) !== -1) {
+          return item
+        }
+      })
+    }
+  },
   methods: {
     // 点击input后派发select事件, 在父组件里操作选择城市的隐藏和显示
     handleSelect () {
@@ -175,7 +222,31 @@ export default {
     selectItem (item) {
       this.$emit('city', item)
     },
-    stopBubble () {}
+    stopBubble () {},
+    inputChange (e) {
+      this.nowValue = e.target.value.trim()
+      this.myIsShow = false
+      this.fuzzyShow = true
+    },
+    fuzzySelect (city) {
+      this.myValue = city
+      this.fuzzyShow = false
+    }
+  },
+  watch: {
+    isShow (newVal) {
+      this.myIsShow = newVal
+    },
+    myIsShow (newVal) {
+      this.$emit('newIsShow', newVal)
+    },
+    // 实现父子组件间的双向绑定
+    value (newValue) {
+      this.myValue = newValue
+    },
+    myValue (newValue) {
+      this.$emit('newCity', newValue)
+    }
   }
 }
 </script>
@@ -184,6 +255,26 @@ export default {
   border: 1px solid #c7d1e4
   border-radius: 3px
   position: relative
+  .fuzzy-search
+    position: absolute
+    top: 25px
+    left: -1px
+    width: 418px
+    padding: 5px 0
+    border: 1px solid #bec2c4
+    z-index: 101
+    background-color: #fff
+    li
+      padding: 4px 5px
+      color: #13334d
+      font-size: 14px
+      cursor: pointer
+      &.selected
+        background-color: #9cd9ff
+        color: #ffffff
+      &:hover
+        background-color: #9cd9ff
+        color: #ffffff
   .select-box
     position: absolute
     top: 25px

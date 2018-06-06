@@ -16,11 +16,11 @@
       <div class="city fl">
         <div class="start-city select-wrap">
           <label>出发城市:</label>
-          <input-city :value="startCity" :isShow="isStartShow" @select="startHandle" @city="handleStartCity"></input-city>
+          <input-city :value="startCity" :isShow="isStartShow" @newIsShow="newStartIsShow" @select="startHandle" @newCity="newStartCity" @city="handleStartCity"></input-city>
         </div>
         <div class="arrive-city select-wrap">
           <label>到达城市:</label>
-          <input-city :value="arriveCity" :isShow="isArriveShow" @select="arriveHandle" @city="handleArriveCIty"></input-city>
+          <input-city :value="arriveCity" :isShow="isArriveShow" @newIsShow="newArriveIsShow" @select="arriveHandle" @newCity="newArriveCity" @city="handleArriveCIty"></input-city>
         </div>
       </div>
       <div class="change" :class="[changeSelected ? 'change-select' : '']" @click="changeCity" @mouseenter="changeEnterHandle" @mouseleave="changeLeaveHandle"></div>
@@ -119,6 +119,18 @@ export default {
     handleArriveCIty (city) {
       this.arriveCity = city
       this.isArriveShow = false
+    },
+    newStartCity (newCity) {
+      this.startCity = newCity
+    },
+    newStartIsShow (newIsShow) {
+      this.isStartShow = newIsShow
+    },
+    newArriveCity (newCity) {
+      this.arriveCity = newCity
+    },
+    newArriveIsShow (newIsShow) {
+      this.isArriveShow = newIsShow
     }
   },
   mounted () {

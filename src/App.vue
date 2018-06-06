@@ -42,4 +42,7 @@ input {
 .fl {
   float: left;
 }
+.fr {
+  float: right;
+}
 </style>
