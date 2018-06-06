@@ -31,7 +31,8 @@ input {
   border: 0;
   outline: none;
   appearance: none;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0)
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  background-color: transparent;
 }
 .clear:after {
   content: '';
